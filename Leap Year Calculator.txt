@@ -1,0 +1,43 @@
+﻿# Ariann Decker, Leap Year Program
+#CIT241-01 - Script 1
+# 2/9/2023
+# Leap Year Calculator
+
+#creating objects, prompting user
+
+$leap = new-object -TypeName psobject
+$year = read-host "Please Enter A Year"
+$leap | add-member -membertype noteproperty -name year -value $year
+
+$leap | add-member -membertype noteproperty -name purpose -value "This calculates leap year"
+
+# Creating the script
+
+$leapscript = {
+$result 
+
+if ($this.year % 4 -eq 0 -and $this.year % 100 -ne 0)
+{
+
+$result = "Leap Year"
+
+}
+
+elseif ($this.year % 400 -eq 0)
+{
+
+$result = "leap year"
+
+}
+
+else 
+{
+$result = "Not a leap year"
+}
+
+return $result
+
+}
+$leap |  add-member -membertype ScriptMethod -name leapcalc -value $leapscript
+
+$leap.leapcalc()

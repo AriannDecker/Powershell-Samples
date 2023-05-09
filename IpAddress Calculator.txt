@@ -1,0 +1,90 @@
+﻿<# Ariann Decker
+   CIT241-01
+   February 14 2023
+   Script 2 - IP Addressing
+#>
+$prompt = Read-Host "Would you like to find the broadcast address or network address?"
+$IP=Read-host -Prompt "Enter an IP Address"
+$Subnet=read-host -Prompt "Enter a subnet mask"
+
+
+if($prompt -eq "network"){
+
+#Convert the IP Address to Binary
+$binaryip=$IP -split '\.'| ForEach-Object {[convert]::ToString($_,2).padleft(8,"0")}
+$binaryip=$binaryip -join ''
+
+#Convert the Subnet Mask to Binary 
+$binarysubnet=$Subnet -split '\.'| ForEach-Object {[convert]::ToString($_,2).padleft(8,"0")}
+$binarysubnet=$binarysubnet -join ''
+
+#Logical And, This will perform a bitwise and on each bit of the subnet mask and add it to an array. 
+#Definitely more elegant ways to do this... but it works!
+$bitarray=""
+for ($i = 0; $i -lt 32; $i++)
+{ 
+    
+  $resultand=$binaryip.Substring($i,1) -band $binarysubnet.Substring($i,1)
+   $bitArray+=$resultand.ToString()
+}
+
+
+$bitarray
+$binarysubnet
+$binaryip
+
+#Convert Binary Back to Decimal
+$octet1=[Convert]::ToInt32($bitarray.Substring(0,8),2)
+$octet2=[Convert]::ToInt32($bitarray.Substring(8,8),2)
+$octet3=[Convert]::ToInt32($bitarray.Substring(16,8),2)
+$octet4=[Convert]::ToInt32($bitarray.Substring(24,8),2)
+
+#Results for network ID
+
+echo "The Network ID is $octet1.$octet2.$octet3.$octet4"
+}
+if($prompt -eq "broadcast"){
+
+#This is where broadcast address is calculated
+#Convert the IP Address to Binary
+$binaryip=$IP -split '\.'| ForEach-Object {[convert]::ToString($_,2).padleft(8,"0")}
+$binaryip=$binaryip -join ''
+
+#Convert the Subnet Mask to Binary 
+$binarysubnet=$Subnet -split '\.'| ForEach-Object {[convert]::ToString($_,2).padleft(8,"0")}
+$binarysubnet=$binarysubnet -join ''
+
+$binarysubnet=$binarysubnet.replace('0','x')
+$binarysubnet=$binarysubnet.replace('1','0')
+$binarysubnetwildcard=$binarysubnet.replace('x','1')
+
+
+#Logical And, This will perform a bitwise and on each bit of the subnet mask and add it to an array. 
+#Definitely more elegant ways to do this... but it works!
+$bitarray=""
+for ($i = 0; $i -lt 32; $i++)
+{ 
+    
+  $resultand=$binaryip.Substring($i,1) -bor $binarysubnetWildcard.Substring($i,1)
+   $bitArray+=$resultand.ToString()
+}
+
+
+$bitarray
+$binarysubnet
+$binaryip
+
+#Convert Binary Back to Decimal
+$octet1=[Convert]::ToInt32($bitarray.Substring(0,8),2)
+$octet2=[Convert]::ToInt32($bitarray.Substring(8,8),2)
+$octet3=[Convert]::ToInt32($bitarray.Substring(16,8),2)
+$octet4=[Convert]::ToInt32($bitarray.Substring(24,8),2)
+
+#Results for broadcast ID
+
+echo "The Broadcast ID is $octet1.$octet2.$octet3.$octet4"
+
+}
+
+
+
